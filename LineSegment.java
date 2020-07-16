@@ -17,10 +17,10 @@ public class LineSegment {
     /**
      * Initializes a new line segment.
      *
-     * @param  p one endpoint
-     * @param  q the other endpoint
+     * @param p one endpoint
+     * @param q the other endpoint
      * @throws NullPointerException if either <tt>p</tt> or <tt>q</tt>
-     *         is <tt>null</tt>
+     *                              is <tt>null</tt>
      */
     public LineSegment(Point p, Point q) {
         if (p == null || q == null) {
@@ -30,7 +30,6 @@ public class LineSegment {
         this.q = q;
     }
 
-    
     /**
      * Draws this line segment to standard draw.
      */
@@ -61,5 +60,17 @@ public class LineSegment {
         throw new UnsupportedOperationException();
     }
 
+    public double slope() {
+        return p.slopeTo(q);
+    }
+
+    public double intercept() {
+        double s = slope();
+        if (s == Double.POSITIVE_INFINITY) {
+            return p.x() - p.y() / s;
+        }
+
+        return p.y() - s * p.x();
+    }
 }
 
