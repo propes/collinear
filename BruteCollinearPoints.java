@@ -4,14 +4,10 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints {
-    private Point[] points;
     private LineSegment[] segments = new LineSegment[1];
     private int segmentCount = 0;
 
     public BruteCollinearPoints(Point[] points) {
-        // Throw an IllegalArgumentException if the argument to the constructor is null,
-        // if any point in the array is null, or if the argument to the constructor contains a repeated point.
-
         if (points == null) throw new IllegalArgumentException();
 
         for (int i = 0; i < points.length; i++) {
@@ -32,7 +28,7 @@ public class BruteCollinearPoints {
 
                         if (aux[0].slopeTo(aux[1]) == aux[0].slopeTo(aux[2]) &&
                                 aux[0].slopeTo(aux[1]) == aux[0].slopeTo(aux[3])) {
-                            addToSegments(new LineSegment(aux[0], aux[3]));
+                            addSegment(new LineSegment(aux[0], aux[3]));
                         }
                     }
                 }
@@ -48,7 +44,7 @@ public class BruteCollinearPoints {
         return segments;
     }
 
-    private void addToSegments(LineSegment segment) {
+    private void addSegment(LineSegment segment) {
         if (segments.length < segmentCount + 1)
             doubleSegments();
         segments[segmentCount++] = segment;
@@ -63,7 +59,6 @@ public class BruteCollinearPoints {
     }
 
     public static void main(String[] args) {
-
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
