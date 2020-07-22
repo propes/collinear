@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -5,75 +6,65 @@ import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 
 public class FastCollinearPoints {
-    private LineSegment[] segments = new LineSegment[1];
-    private int segmentCount = 0;
+    private Bag<LineSegment> segments = new Bag<>();
 
     public FastCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
-        if (points[0] == null) throw new IllegalArgumentException("At least one point is null.");
+    
+        Point[] orderedPoints = copyPoints(points);
 
-        int i = 0;
-        while (i <= points.length - 4) {
-            Point p = points[i];
-            int j = i + 1;
-            Arrays.sort(points, j, points.length, p.slopeOrder());
+        for (Point p : points) {
+            Arrays.sort(orderedPoints, p.slopeOrder());
 
-            while (j <= points.length - 3) {
+            int j = 1; // Skip the first point in the ordered set because it is the reference point.
+            while (j <= orderedPoints.length - 3) {
                 Point lo = p;
                 Point hi = p;
                 double s;
                 int collinearSegments = 0;
                 do {
-                    if (hi.compareTo(points[j]) < 0) hi = points[j];
-                    else if (lo.compareTo(points[j]) > 0) lo = points[j];
-                    s = p.slopeTo(points[j]);
+                    if (hi.compareTo(orderedPoints[j]) < 0) hi = orderedPoints[j];
+                    else if (lo.compareTo(orderedPoints[j]) > 0) lo = orderedPoints[j];
+                    s = p.slopeTo(orderedPoints[j]);
                     if (s == Double.NEGATIVE_INFINITY)
                         throw new IllegalArgumentException("At least two points are the same");
                     j++;
                     collinearSegments++;
-                } while (j < points.length && p.slopeTo(points[j]) == s);
+                } while (j < orderedPoints.length && p.slopeTo(orderedPoints[j]) == s);
 
                 if (collinearSegments >= 3) {
                     LineSegment segment = new LineSegment(lo, hi);
                     if (!segmentExists(segment))
-                        addSegment(segment);
-                    break;
+                        segments.add(segment);
                 }
             }
-            i++;
         }
     }
 
-    public int numberOfSegments() {
-        return segmentCount;
-    }
+    private Point[] copyPoints(Point[] points) {
+        Point[] copy = new Point[points.length];
+        for (int i = 0; i < points.length; i++)
+            copy[i] = points[i];
 
-    public LineSegment[] segments() {
-        LineSegment[] copy = new LineSegment[segmentCount];
-        for (int i = 0; i < segmentCount; i++)
-            copy[i] = segments[i];
         return copy;
     }
 
-    private void addSegment(LineSegment segment) {
-        if (segments.length < segmentCount + 1)
-            doubleSegments();
-        segments[segmentCount] = segment;
-        segmentCount++;
+    public int numberOfSegments() {
+        return segments.size();
     }
 
-    private void doubleSegments() {
-        LineSegment[] segmentsCopy = new LineSegment[segments.length * 2];
-        for (int i = 0; i < segments.length; i++) {
-            segmentsCopy[i] = segments[i];
-        }
-        segments = segmentsCopy;
+    public LineSegment[] segments() {
+        LineSegment[] segArray = new LineSegment[segments.size()];
+        int i = 0;
+        for (LineSegment seg : segments)
+            segArray[i++] = seg;
+
+        return segArray;
     }
 
     private boolean segmentExists(LineSegment segment) {
-        for (int i = 0; i < segmentCount; i++) {
-            if (segments[i].equals(segment))
-                return true;
+        for (LineSegment seg : segments) {
+            if (segment.equals(seg)) return true;
         }
         return false;
     }

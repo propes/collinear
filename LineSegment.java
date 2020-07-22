@@ -48,9 +48,9 @@ public class LineSegment {
         return p + " -> " + q;
     }
 
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        LineSegment segment = (LineSegment) o;
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        LineSegment segment = (LineSegment) obj;
         return segment.slope() == slope() && segment.intercept() == intercept();
     }
 
@@ -73,7 +73,7 @@ public class LineSegment {
     public double intercept() {
         double s = slope();
         if (s == Double.POSITIVE_INFINITY) {
-            return p.x() - p.y() / s;
+            return p.x();
         }
 
         return p.y() - s * p.x();
