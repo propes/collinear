@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Merge;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -11,31 +12,33 @@ public class FastCollinearPoints {
     public FastCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
 
-        Point[] orderedPoints = copyPoints(points);
+        Merge.sort(points);
 
-        for (Point p : points) {
+        for (int i = 0; i <= points.length - 4; i++) {
+            Point p = points[i];
+            Point[] orderedPoints = copyPoints(points);
             Arrays.sort(orderedPoints, p.slopeOrder());
 
-            int j = 1; // Skip the first point in the ordered set because it is the reference point.
+            int j = 1;
             while (j <= orderedPoints.length - 3) {
-                Point lo = p;
-                Point hi = p;
-                double s;
+                Point q;
+                double slope = Double.NEGATIVE_INFINITY;
                 int collinearSegments = 0;
+                boolean slopeCounted = false;
                 do {
-                    if (hi.compareTo(orderedPoints[j]) < 0) hi = orderedPoints[j];
-                    else if (lo.compareTo(orderedPoints[j]) > 0) lo = orderedPoints[j];
-                    s = p.slopeTo(orderedPoints[j]);
-                    if (s == Double.NEGATIVE_INFINITY)
+                    q = orderedPoints[j];
+                    if (p.compareTo(q) == 0)
                         throw new IllegalArgumentException("At least two points are the same");
+                    else if (p.compareTo(q) > 0)
+                        slopeCounted = true;
+
+                    slope = p.slopeTo(q);
+                    if (!slopeCounted) collinearSegments++;
                     j++;
-                    collinearSegments++;
-                } while (j < orderedPoints.length && p.slopeTo(orderedPoints[j]) == s);
+                } while (j < orderedPoints.length && slope == p.slopeTo(orderedPoints[j]));
 
                 if (collinearSegments >= 3) {
-                    LineSegment segment = new LineSegment(lo, hi);
-                    if (!segmentExists(segment))
-                        segments.add(segment);
+                    segments.add(new LineSegment(p, q));
                 }
             }
         }
@@ -60,13 +63,6 @@ public class FastCollinearPoints {
             segArray[i++] = seg;
 
         return segArray;
-    }
-
-    private boolean segmentExists(LineSegment segment) {
-        for (LineSegment seg : segments) {
-            if (segment.equals(seg)) return true;
-        }
-        return false;
     }
 
     public static void main(String[] args) {
