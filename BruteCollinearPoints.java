@@ -41,7 +41,11 @@ public class BruteCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return segments;
+        LineSegment[] copy = new LineSegment[segments.length];
+        for (int i = 0; i < segments.length; i++) {
+            copy[i] = segments[i];
+        }
+        return copy;
     }
 
     private void addSegment(LineSegment segment) {
