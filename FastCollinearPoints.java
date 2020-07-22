@@ -10,26 +10,24 @@ public class FastCollinearPoints {
     private final Bag<LineSegment> segments = new Bag<>();
 
     public FastCollinearPoints(Point[] points) {
-        if (points == null) throw new IllegalArgumentException();
+        validatePoints(points);
+        Point[] pointsCopy = copyPoints(points);
+        Merge.sort(pointsCopy);
 
-        Merge.sort(points);
-
-        for (int i = 0; i <= points.length - 4; i++) {
-            Point p = points[i];
-            Point[] orderedPoints = copyPoints(points);
+        for (int i = 0; i <= pointsCopy.length - 4; i++) {
+            Point p = pointsCopy[i];
+            Point[] orderedPoints = copyPoints(pointsCopy);
             Arrays.sort(orderedPoints, p.slopeOrder());
 
             int j = 1;
             while (j <= orderedPoints.length - 3) {
                 Point q;
-                double slope = Double.NEGATIVE_INFINITY;
+                double slope;
                 int collinearSegments = 0;
                 boolean slopeCounted = false;
                 do {
                     q = orderedPoints[j];
-                    if (p.compareTo(q) == 0)
-                        throw new IllegalArgumentException("At least two points are the same");
-                    else if (p.compareTo(q) > 0)
+                    if (p.compareTo(q) > 0)
                         slopeCounted = true;
 
                     slope = p.slopeTo(q);
@@ -41,6 +39,17 @@ public class FastCollinearPoints {
                     segments.add(new LineSegment(p, q));
                 }
             }
+        }
+    }
+
+    private void validatePoints(Point[] points) {
+        if (points == null) throw new IllegalArgumentException();
+
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new IllegalArgumentException("At least one point is null.");
+            if (i < points.length - 1 && points[i].compareTo(points[i + 1]) == 0)
+                throw new IllegalArgumentException("At least two points are the same.");
         }
     }
 
