@@ -48,12 +48,6 @@ public class LineSegment {
         return p + " -> " + q;
     }
 
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
-        LineSegment segment = (LineSegment) obj;
-        return p.equals(segment.p) && q.equals(segment.q);
-    }
-
     /**
      * Throws an exception if called. The hashCode() method is not supported because
      * hashing has not yet been introduced in this course. Moreover, hashing does not
