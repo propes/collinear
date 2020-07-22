@@ -6,11 +6,11 @@ import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 
 public class FastCollinearPoints {
-    private Bag<LineSegment> segments = new Bag<>();
+    private final Bag<LineSegment> segments = new Bag<>();
 
     public FastCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
-    
+
         Point[] orderedPoints = copyPoints(points);
 
         for (Point p : points) {
