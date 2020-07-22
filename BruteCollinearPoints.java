@@ -1,34 +1,28 @@
+import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Merge;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints {
-    private LineSegment[] segments = new LineSegment[1];
-    private int segmentCount = 0;
+    private Bag<LineSegment> segments = new Bag<>();
 
     public BruteCollinearPoints(Point[] points) {
-        if (points == null) throw new IllegalArgumentException();
+        validatePoints(points);
 
-        for (int i = 0; i < points.length; i++) {
-            if (points[i] == null) throw new IllegalArgumentException("All points must be null");
+        Point[] pointsCopy = copyPoints(points);
+        Merge.sort(pointsCopy);
 
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].equals(points[j]))
-                    throw new IllegalArgumentException("All points must be unique");
-            }
-        }
-
-        for (int i = 0; i < points.length - 3; i++) {
-            for (int j = i + 1; j < points.length - 2; j++) {
-                for (int k = j + 1; k < points.length - 1; k++) {
-                    for (int m = k + 1; m < points.length; m++) {
-                        Point[] aux = { points[i], points[j], points[k], points[m] };
-                        Merge.sort(aux);
-
-                        if (aux[0].slopeTo(aux[1]) == aux[0].slopeTo(aux[2]) &&
-                                aux[0].slopeTo(aux[1]) == aux[0].slopeTo(aux[3])) {
-                            addSegment(new LineSegment(aux[0], aux[3]));
+        for (int i = 0; i < pointsCopy.length - 3; i++) {
+            for (int j = i + 1; j < pointsCopy.length - 2; j++) {
+                for (int k = j + 1; k < pointsCopy.length - 1; k++) {
+                    for (int m = k + 1; m < pointsCopy.length; m++) {
+                        Point p = pointsCopy[i];
+                        Point q = pointsCopy[j];
+                        Point r = pointsCopy[k];
+                        Point s = pointsCopy[m];
+                        if (p.slopeTo(q) == p.slopeTo(r) && p.slopeTo(q) == p.slopeTo(s)) {
+                            segments.add(new LineSegment(p, s));
                         }
                     }
                 }
@@ -37,29 +31,35 @@ public class BruteCollinearPoints {
     }
 
     public int numberOfSegments() {
-        return segmentCount;
+        return segments.size();
     }
 
     public LineSegment[] segments() {
-        LineSegment[] copy = new LineSegment[segmentCount];
-        for (int i = 0; i < segmentCount; i++) {
-            copy[i] = segments[i];
+        LineSegment[] segArray = new LineSegment[segments.size()];
+        int i = 0;
+        for (LineSegment seg : segments)
+            segArray[i++] = seg;
+
+        return segArray;
+    }
+
+    private void validatePoints(Point[] points) {
+        if (points == null) throw new IllegalArgumentException();
+
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new IllegalArgumentException("At least one point is null.");
+            if (i < points.length - 1 && points[i].compareTo(points[i + 1]) == 0)
+                throw new IllegalArgumentException("At least two points are the same.");
         }
+    }
+
+    private Point[] copyPoints(Point[] points) {
+        Point[] copy = new Point[points.length];
+        for (int i = 0; i < points.length; i++)
+            copy[i] = points[i];
+
         return copy;
-    }
-
-    private void addSegment(LineSegment segment) {
-        if (segments.length < segmentCount + 1)
-            doubleSegments();
-        segments[segmentCount++] = segment;
-    }
-
-    private void doubleSegments() {
-        LineSegment[] copy = new LineSegment[segments.length * 2];
-        for (int i = 0; i < segments.length; i++) {
-            copy[i] = segments[i];
-        }
-        segments = copy;
     }
 
     public static void main(String[] args) {
