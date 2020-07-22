@@ -45,11 +45,9 @@ public class FastCollinearPoints {
     private void validatePoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
 
-        for (int i = 0; i < points.length; i++) {
-            if (points[i] == null)
+        for (Point p : points) {
+            if (p == null)
                 throw new IllegalArgumentException("At least one point is null.");
-            if (i < points.length - 1 && points[i].compareTo(points[i + 1]) == 0)
-                throw new IllegalArgumentException("At least two points are the same.");
         }
     }
 

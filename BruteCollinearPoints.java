@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints {
-    private Bag<LineSegment> segments = new Bag<>();
+    private final Bag<LineSegment> segments = new Bag<>();
 
     public BruteCollinearPoints(Point[] points) {
         validatePoints(points);
@@ -46,11 +46,9 @@ public class BruteCollinearPoints {
     private void validatePoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
 
-        for (int i = 0; i < points.length; i++) {
-            if (points[i] == null)
+        for (Point p : points) {
+            if (p == null)
                 throw new IllegalArgumentException("At least one point is null.");
-            if (i < points.length - 1 && points[i].compareTo(points[i + 1]) == 0)
-                throw new IllegalArgumentException("At least two points are the same.");
         }
     }
 
