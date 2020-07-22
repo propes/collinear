@@ -72,8 +72,7 @@ public class FastCollinearPoints {
 
     private boolean segmentExists(LineSegment segment) {
         for (int i = 0; i < segmentCount; i++) {
-            if (segments[i].slope() == segment.slope() &&
-                    segments[i].intercept() == segment.intercept())
+            if (segments[i].equals(segment))
                 return true;
         }
         return false;

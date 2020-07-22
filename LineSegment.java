@@ -48,6 +48,12 @@ public class LineSegment {
         return p + " -> " + q;
     }
 
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        LineSegment segment = (LineSegment) o;
+        return segment.slope() == slope() && segment.intercept() == intercept();
+    }
+
     /**
      * Throws an exception if called. The hashCode() method is not supported because
      * hashing has not yet been introduced in this course. Moreover, hashing does not
