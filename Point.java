@@ -61,14 +61,15 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        if (that == null) throw new IllegalArgumentException("Reference point can not be null.");
+        if (that == null) throw new NullPointerException("Reference point can not be null.");
 
         if (this.x == that.x) {
             if (this.y == that.y) return Double.NEGATIVE_INFINITY;
             return Double.POSITIVE_INFINITY;
         }
 
-        return ((double) that.y - this.y) / (that.x - this.x);
+        double slope = ((double) that.y - this.y) / (that.x - this.x);
+        return slope == -0 ? +0 : slope;
     }
 
     /**
@@ -84,7 +85,7 @@ public class Point implements Comparable<Point> {
      * argument point
      */
     public int compareTo(Point that) {
-        if (that == null) throw new IllegalArgumentException("Reference point can not be null.");
+        if (that == null) throw new NullPointerException("Reference point can not be null.");
 
         if (this.y < that.y || this.y == that.y && this.x < that.x) return -1;
         else if (this.y > that.y || this.x > that.x) return 1;
@@ -117,7 +118,7 @@ public class Point implements Comparable<Point> {
     private class SlopeComparator implements Comparator<Point> {
         public int compare(Point p1, Point p2) {
             if (p1 == null || p2 == null)
-                throw new IllegalArgumentException("One or more reference points are null.");
+                throw new NullPointerException("One or more reference points are null.");
 
             double slope1 = slopeTo(p1);
             double slope2 = slopeTo(p2);
@@ -182,12 +183,14 @@ public class Point implements Comparable<Point> {
         p1 = new Point(0, 0);
         p2 = new Point(1, 0);
 
-        Assert.equal(0, p1.slopeTo(p2), "slope should return zero when line is horizontal right");
+        Assert.equal(0, p1.slopeTo(p2),
+                     "slope should return positive zero when line is horizontal right");
 
         p1 = new Point(1, 0);
         p2 = new Point(0, 0);
 
-        Assert.equal(0, p1.slopeTo(p2), "slope should return zero when line is horizontal left");
+        Assert.equal(0, p1.slopeTo(p2),
+                     "slope should return positive zero when line is horizontal left");
 
         p1 = new Point(0, 0);
         p2 = new Point(1, 1);
