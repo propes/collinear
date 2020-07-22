@@ -51,7 +51,7 @@ public class LineSegment {
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) return false;
         LineSegment segment = (LineSegment) obj;
-        return segment.slope() == slope() && segment.intercept() == intercept();
+        return p.equals(segment.p) && q.equals(segment.q);
     }
 
     /**
@@ -64,19 +64,6 @@ public class LineSegment {
      */
     public int hashCode() {
         throw new UnsupportedOperationException();
-    }
-
-    public double slope() {
-        return p.slopeTo(q);
-    }
-
-    public double intercept() {
-        double s = slope();
-        if (s == Double.POSITIVE_INFINITY) {
-            return p.x();
-        }
-
-        return p.y() - s * p.x();
     }
 }
 

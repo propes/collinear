@@ -114,14 +114,6 @@ public class Point implements Comparable<Point> {
         return "(" + x + ", " + y + ")";
     }
 
-    public int x() {
-        return x;
-    }
-
-    public int y() {
-        return y;
-    }
-
     private class SlopeComparator implements Comparator<Point> {
         public int compare(Point p1, Point p2) {
             if (p1 == null || p2 == null)
